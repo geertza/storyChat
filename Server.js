@@ -4,24 +4,32 @@ const { Socket } = require('dgram');
 const app = express();
 const PORT = process.env.PORT || 3001;
 require ('dotenv').config();
-// api routes are loaded first before 'catch-all'
-const todos = ['dummy todo', 'another dummy todo'];
+const mongoose = require('mongoose');
+const userRouter = require('./routes/User');
+const cookieParser = require('cookie-parser');
+// body parser to express
+app.use(express.json());
+// encryption key
+app.use(cookieParser());
+// connect to mongodb through moongoose orm
+mongoose.connect('mongodb://localhost/dat', {
+  useNewUrlParser: true,
+  useUnifiedTopology: true
+  },()=>{console.log('db connect');
+});
+app.use('/user',userRouter);
 
-// app.get('/todos', (req, res) => {
-//   res.json(todos);
-// });
 
-// app.post('/new/todo', (req, res) => {
-//   todos.push('new todo');
-//   res.json(todos);
-// });
+//-------io socket----
 var id = 0
 const server = require('http').createServer(app);
 const io = require('socket.io').listen(55550);
+const passportJwtSocketIo = require('passport-jwt.socketio')
+
+
+
 io.on('connection', (socket) => {
-  setInterval(function (){
-    socket.emit('gamechange',(id))
-  },2000);
+  
   console.log('Socket',id++) });
 
 // serve static assets
