@@ -1,27 +1,17 @@
-import React, {createContext,useState,useEffect} from 'react';
-import AuthService from '../authorize/AuthService';
+import React, {createContext,useState} from 'react';
 
-export const AuthContext = createContext();
+// export const AuthContext = React.createContext(username);
 
-export default ({ children })=>{
-    const [user,setUser] = useState(null);
-    const [isAuthenticated,setIsAuthenticated] = useState(false);
-    const [isLoaded,setIsLoaded] = useState(false);
+export default createContext({user:'fred'})
 
-    useEffect(()=>{
-        AuthService.isAuthenticated().then(data =>{
-            setUser(data.user);
-            setIsAuthenticated(data.isAuthenticated);
-            setIsLoaded(true);
-        });
-    },[]);
-
-    return (
-        <div>
-            {!isLoaded ? <h1>Loading</h1> : 
-            <AuthContext.Provider value={{user,setUser,isAuthenticated,setIsAuthenticated}}>
-                { children }
-            </AuthContext.Provider>}
-        </div>
-    )
-}
+// export const authUser = props =>{
+//   const [userName,isauthorized] = useState
+//     ([{
+//      userName : ''
+//     },
+//     {
+//      isauthorized : 'false' 
+//   }
+//     ]);
+// return <AuthContext.User>{props.children}</AuthContext.User> };
+    

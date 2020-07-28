@@ -5,8 +5,6 @@ const passportConfig = require('../passport');
 const JWT = require('jsonwebtoken');
 const User = require('../models/user');
 
-
-
 const signToken = userID =>{
     return JWT.sign({
         iss : "game",
@@ -45,19 +43,17 @@ userRouter.post('/login',passport.authenticate('local',{session : false}),(req,r
 userRouter.get('/logout',passport.authenticate('jwt',{session : false}),(req,res)=>{
     res.clearCookie('access_token');
     res.json({user:{username : "", role : ""},success : true});
-  
 });
-
-
-
-
 
 userRouter.get('/authenticated',passport.authenticate('jwt',{session : false}),(req,res)=>{
-    const {username,role} = req.user;
-    res.status(200).json({isAuthenticated : true, user : {username,role}});
+    const {username} = req.user;
+    res.status(200).json({isAuthenticated : true, user : {username}});
 });
 
-
+userRouter.get('/authenticated',passport.authenticate('jwt',{session : false}),(req,res)=>{
+    const {username} = req.user;
+    res.status(200).json({isAuthenticated : true, user : {username}});
+});
 
 
 

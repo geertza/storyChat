@@ -10,9 +10,12 @@ import Grid from '@material-ui/core/Grid';
 import Box from '@material-ui/core/Box';import Typography from '@material-ui/core/Typography';
 import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
-import {AuthContext} from '../Context/AuthContext';
 import Message from '../components/Message';
 import AuthService from '../authorize/AuthService';
+//redux
+import { connect } from 'react-redux';
+import {SetUser} from "../utility/store";
+
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -50,29 +53,31 @@ const useStyles = makeStyles((theme) => ({
 const Login = props=>{
   const [user,setUser] = useState({user: "", password : ""});
   const [message,setMessage] = useState(null);
-  const authContext = useContext(AuthContext);
   
+ 
   const onChange = e =>{
     setUser({...user,[e.target.name] : e.target.value});
 }
   const onSubmit = e =>{
       e.preventDefault();
       AuthService.login(user).then(data=>{
-          console.log(data);
-          const { isAuthenticated,user,message} = data;
+          const { isAuthenticated,username,message} = data;
           if(isAuthenticated){
-              authContext.setUser(user);
-              authContext.setIsAuthenticated(isAuthenticated);
-              props.history.push('/todos');
+            console.log("authentictated")
+              // authContext.setUser(username);
+              // authContext.setIsAuthenticated(isAuthenticated);
+              props.history.push('/lobby');
           }
-          else
-              setMessage(message);
+          else{
+              setMessage(message);}
       });
   }
   const classes = useStyles();
-
+  console.log(props.state)
   return (
     <Container component="main" maxWidth="xs">
+      <button onClick={()=>props.SetUser("123")}>buutoon hherere</button>
+      <div>{props.user}</div>
       <CssBaseline />
       <div className={classes.paper}>
         <Avatar className={classes.avatar}>
@@ -90,7 +95,7 @@ const Login = props=>{
             fullWidth
             id="email"
             label="UserName:"
-            name="user"
+            name="username"
             autoComplete="email"
             autoFocus
           />
@@ -132,6 +137,7 @@ const Login = props=>{
             </Grid>
           </Grid>
         </form>
+        {message ? <Message message={message}/> : null}
       </div>
       <Box mt={8}>
         <Copyright />
@@ -139,5 +145,13 @@ const Login = props=>{
     </Container>
   );
 }
+const mapStateToProps = (state,ownprops ) => {
+  console.log('maps',state)
+  return {
+    ...ownprops,
+    user : state.user
+  }
+}
 
-export default Login;
+const mapDispatchToProps = { SetUser }
+export default connect(mapStateToProps,mapDispatchToProps)(Login);
