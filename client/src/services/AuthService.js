@@ -27,9 +27,10 @@ export default {
           .then(data => data);
     },
     logout : ()=>{
+        console.log('getch out')
         return fetch('/user/logout')
-                .then(res => res.json())
-                .then(data => data);
+               
+                
     },
     isAuthenticated : ()=>{
         return fetch('/user/authenticated')
@@ -42,3 +43,7 @@ export default {
     }
 
 }
+
+
+
+      

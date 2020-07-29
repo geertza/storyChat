@@ -1,9 +1,7 @@
 
-import {
-    combineReducers,
-    createStore,
-  } from 'redux';
-  export const SetUser = user => ({
+import { combineReducers,createStore,} from 'redux';
+  
+export const SetUser = user => ({
     type: 'SET_USER',
     payload : user,
   });
