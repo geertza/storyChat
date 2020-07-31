@@ -11,8 +11,9 @@ const cookieParser = require('cookie-parser');
 app.use(express.json());
 // encryption key
 app.use(cookieParser());
+
 // connect to mongodb through moongoose orm
-mongoose.connect('mongodb://localhost/dat', {
+mongoose.connect('mongodb://localhost/dat2', {
   useNewUrlParser: true,
   useUnifiedTopology: true
   },()=>{console.log('db connect');
@@ -24,12 +25,17 @@ app.use('/user',userRouter);
 var id = 0
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
-const passportJwtSocketIo = require('passport-jwt.socketio')
+const passportJwtSocketIo = require('passport-jwt.socketio');
+const { disconnect } = require('process');
 
 io.on('connection', function(client){
+  console.log('connect',id++)
   //join log
   client.on('join',function(){
     console.log(`client ${client.id} has joined`);
+  })
+  client.on(disconnect,()=>{
+    console.log(`client ${client.id} has left `)
   })
 
   //if there is a message..

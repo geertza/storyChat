@@ -1,4 +1,4 @@
-import React, {useState,useContext} from 'react';
+import React, {useState} from 'react';
 import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
@@ -50,19 +50,19 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 const Login = props=>{
-  const [user,setUser] = useState({user: "", password : ""});
+  const [player,setPlayer] = useState({username: "", password : ""});
   const [message,setMessage] = useState(null);
   
  
   const onChange = e =>{
-    setUser({...user,[e.target.name] : e.target.value});
+    setPlayer({...player,[e.target.name] : e.target.value});
 }
   const onSubmit = e =>{
       e.preventDefault();
-      AuthService.login(user).then(data=>{
-          const { isAuthenticated,username,message} = data;
+      AuthService.login(player).then(data=>{
+          const { isAuthenticated,player} = data;
           if(isAuthenticated){
-              props.history.push('/lobby');
+              props.history.push('/chat');
           }
           else{
               setMessage(message);}

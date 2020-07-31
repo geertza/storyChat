@@ -1,8 +1,8 @@
 const mongoose = require('mongoose');
 const bcrypt = require('bcrypt');
-const userRouter = require('../routes/user');
 
-const UserSchema = new mongoose.Schema({
+
+const UsernameSchema = new mongoose.Schema({
     username :{
         type : String,
         required : true,
@@ -12,10 +12,9 @@ const UserSchema = new mongoose.Schema({
     password : {
         type : String,
         required : true
-    },
-    player : [{type : mongoose.Schema.Types.ObjectId, ref: 'player'}]
+    }
 });
-UserSchema.pre('save',function(next){
+UsernameSchema.pre('save',function(next){
     if(!this.isModified('password'))
         return next();
     bcrypt.hash(this.password,10,(err,passwordHash)=>{
@@ -26,7 +25,7 @@ UserSchema.pre('save',function(next){
     });
 });
 
-UserSchema.methods.comparePassword = function(password,cb){
+UsernameSchema.methods.comparePassword = function(password,cb){
     bcrypt.compare(password,this.password,(err,isMatch)=>{
         if(err)
             return cb(err);
@@ -37,5 +36,4 @@ UserSchema.methods.comparePassword = function(password,cb){
         }
     });
 }
-
-module.exports = mongoose.model('User',UserSchema);
+module.exports = mongoose.model('Username',UsernameSchema);
