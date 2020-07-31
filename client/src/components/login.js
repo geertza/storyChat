@@ -12,9 +12,8 @@ import { makeStyles } from '@material-ui/core/styles';
 import Container from '@material-ui/core/Container';
 import Message from '../components/Message';
 import AuthService from '../authorize/AuthService';
-//redux
-import { connect } from 'react-redux';
-import {SetUser} from "../utility/store";
+
+
 
 function Copyright() {
   return (
@@ -142,13 +141,5 @@ const Login = props=>{
     </Container>
   );
 }
-const mapStateToProps = (state,ownprops ) => {
-  console.log('maps',state)
-  return {
-    ...ownprops,
-    user : state.user
-  }
-}
 
-const mapDispatchToProps = { SetUser }
-export default connect(mapStateToProps,mapDispatchToProps)(Login);
+export default (Login);

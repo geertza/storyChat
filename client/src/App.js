@@ -2,7 +2,7 @@ import React,{Redirect} from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import auth from './Context/AuthContext';
 import "./App.css";
-import login from './components/Login'
+import login from './components/login'
 import lobby from './components/Navbar'
 
  function isAuthenticated(address){
@@ -30,7 +30,7 @@ function App() {
 
         <Switch>
           <Route exact path="/" component={login} />
-          <Route exact path="/lobby" component={isAuthenticated(lobby)} />
+          <Route exact path="/lobby" component={lobby} />
           <Route exact path="/user/logout" component={login} />
         </Switch>
       </div>

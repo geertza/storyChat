@@ -35,7 +35,9 @@ export default {
         return fetch('/user/authenticated')
                 .then(res=>{
                     if(res.status !== 401)
-                        return res.json().then(data => data);
+                       return res.json();
+                        
+                        
                     else
                         return { isAuthenticated : false, user : {username : ""}};
                 });
