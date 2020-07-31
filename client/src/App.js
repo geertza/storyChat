@@ -1,6 +1,6 @@
 import React,{Redirect} from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
-import auth from './Context/AuthContext';
+
 import "./App.css";
 import login from './components/login'
 import lobby from './components/Navbar'
@@ -23,7 +23,7 @@ function App() {
 
   
   return (
-    <auth.Provider>
+    
     <Router>
 
         <div>
@@ -36,7 +36,7 @@ function App() {
       </div>
      
     </Router>
-    </auth.Provider>
+   
   );
 }
 

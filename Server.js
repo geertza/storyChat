@@ -20,17 +20,25 @@ mongoose.connect('mongodb://localhost/dat', {
 app.use('/user',userRouter);
 
 
-// //-------io socket----
-// var id = 0
-// const server = require('http').createServer(app);
-// const io = require('socket.io').listen(55550);
-// const passportJwtSocketIo = require('passport-jwt.socketio')
+//-------io socket----
+var id = 0
+const server = require('http').createServer(app);
+const io = require('socket.io')(server);
+const passportJwtSocketIo = require('passport-jwt.socketio')
 
+io.on('connection', function(client){
+  //join log
+  client.on('join',function(){
+    console.log(`client ${client.id} has joined`);
+  })
 
-
-// io.on('connection', (socket) => {
-  
-//   console.log('Socket',id++) });
+  //if there is a message..
+  client.on('message', function(message){
+    //repeat to everyone
+    client.broadcast.emit('broad',message);
+    client.emit('broad',message);
+  })
+}); 
 
 // serve static assets
 if (process.env.NODE_ENV === 'production') {
@@ -38,5 +46,15 @@ if (process.env.NODE_ENV === 'production') {
   // server index.html if `/about` reached -> assets served through `express.static`
   app.get('*', (req, res) => res.sendFile(path.join(__dirname, './client/build/index.html')));
 }
+
+app.use(require('morgan')('dev'));
+
+//access socket.io
+app.use(express.static(__dirname + '/node_modules'));
+
+app.use(express.static(__dirname + '/public'));
+app.get('/',function(req,res,next){
+  res.sendFile(__dirname + '/public/index.html');
+})
 
 app.listen(PORT, () => console.log('App running on PORT: ' + PORT));
