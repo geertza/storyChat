@@ -7,6 +7,7 @@ require ('dotenv').config();
 const mongoose = require('mongoose');
 const userRouter = require('./routes/user');
 const cookieParser = require('cookie-parser');
+const cors = require('cors');
 // body parser to express
 app.use(express.json());
 // encryption key
@@ -22,36 +23,48 @@ app.use('/user',userRouter);
 
 
 //-------io socket----
-var id = 0
+app.use(cors());
 const server = require('http').createServer(app);
 const io = require('socket.io')(server);
-const passportJwtSocketIo = require('passport-jwt.socketio');
-const { disconnect } = require('process');
+// const { disconnect } = require('process');
 
-io.on('connection', function(client){
-  console.log('connect',id++)
-  //join log
-  client.on('join',function(){
-    console.log(`client ${client.id} has joined`);
-  })
-  client.on(disconnect,()=>{
-    console.log(`client ${client.id} has left `)
-  })
+io.on('connect', (socket) => {
+  socket.on('join', ({ name }, callback) => {
+    const { error, user } = addUser({ id: socket.id, name, room });
 
-  //if there is a message..
-  client.on('message', function(message){
-    //repeat to everyone
-    client.broadcast.emit('broad',message);
-    client.emit('broad',message);
-  })
-}); 
+    if(error) return callback(error);
 
-// serve static assets
-if (process.env.NODE_ENV === 'production') {
-  app.use(express.static('./client/'));
-  // server index.html if `/about` reached -> assets served through `express.static`
-  app.get('*', (req, res) => res.sendFile(path.join(__dirname, './client/build/index.html')));
-}
+    socket.join(user.room);
+
+    socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.`});
+    socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined!` });
+
+    io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
+
+    callback();
+  });
+
+
+  socket.on('sendMessage', (message, callback) => {
+    const user = getUser(socket.id);
+
+    io.to(user.room).emit('message', { user: user.name, text: message });
+
+    callback();
+  });
+
+  socket.on('disconnect', () => {
+    const user = removeUser(socket.id);
+
+    if(user) {
+      io.to(user.room).emit('message', { user: 'Admin', text: `${user.name} has left.` });
+      io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room)});
+    }
+  })
+});
+
+
+
 
 app.use(require('morgan')('dev'));
 
@@ -60,7 +73,12 @@ app.use(express.static(__dirname + '/node_modules'));
 
 app.use(express.static(__dirname + '/public'));
 app.get('/',function(req,res,next){
-  res.sendFile(__dirname + '/public/index.html');
+  res.sendFile(__dirname + '/index.html');
 })
-
+// // serve static assets
+// if (process.env.NODE_ENV === 'production') {
+//   app.use(express.static('./build'));
+//   // server index.html if `/about` reached -> assets served through `express.static`
+//   app.get('*', (req, res) => res.sendFile(path.join(__dirname, './build/index.html')));
+// }
 app.listen(PORT, () => console.log('App running on PORT: ' + PORT));

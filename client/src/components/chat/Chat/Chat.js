@@ -1,10 +1,11 @@
 import React, { useState, useEffect } from "react";
-import io from "socket.io-client";
+// import { SocketProvider } from 'socket.io-react';
+import io from 'socket.io-client';
 
-import TextContainer from '../TextContainer/TextContainer';
-import Messages from '../Messages/Messages';
-import InfoBar from '../InfoBar/InfoBar';
-import Input from '../Input/Input';
+// import TextContainer from '../TextContainer/TextContainer';
+// import Messages from '../Messages/Messages';
+// import InfoBar from '../InfoBar/InfoBar';
+// import Input from '../Input/Input';
 import AuthService from '../../../authorize/AuthService';
 import './Chat.css';
 
@@ -16,34 +17,33 @@ let socket;
 //   const [users, setUsers] = useState('');
 //   const [message, setMessage] = useState('');
 //   const [messages, setMessages] = useState([]);
-  const ENDPOINT = 'http://localhost:3001/';
+  
 
   function Chat({ response }) {
     const [isFetching, setFetching] = useState(false);
-    const [User, setUser] = useState([]);
     const [UserName,setUserName] = useState([]);
     const [isAuthenticated,setIsAuthenticated] = useState([]);
     useEffect(function fetch() {
       (async function() {
         setFetching(true);
-        setUser(await AuthService.isAuthenticated(response).then(data =>{
+      await AuthService.isAuthenticated(response).then(data =>{
           console.log(data)
           setUserName(data.username);
           setIsAuthenticated(data.isAuthenticated);
-      }));
+      });
         setFetching(false);
       })();
     }, [response]);
     
     if (isFetching) {
-      return <div>Fetching page</div>;
+      return <div>loading page</div>;
     }
     // let player = JSON.parse(User)
-    console.log('user',{UserName},UserName)
+    console.log('user',UserName)
     if (isAuthenticated){
-        return ChatFinal();
+       return  ChatFinal(UserName);
     }else{
-    return <div>piss off I'm busy</div>}
+    return <div>please log in</div>}
     
   }
   
@@ -52,38 +52,16 @@ let socket;
   
   
   
-  function ChatFinal(){
-  // useEffect(() => {
-   
-    
-    
- 
-
-  // //   socket.emit('join', { UserName }, (error) => {
-  // //     if(error) {
-  // //       alert(error);
-  // //     }
-  // //   });
-  
-  //  })
-  // useEffect(() => {
-  //   socket.on('message', message => {
-  //     setMessages(messages => [ ...messages, message ]);
+  function ChatFinal(UserName){
+  //   socket = io('localHost:3001');
+  //   let room = 1
+  //   useEffect(() => {
+  //   socket.emit('join', { UserName, room}, (error) => {
+  //     if(error) {
+  //       alert(error);
+  //     }
   //   });
-    
-//     socket.on("user", ({ users }) => {
-//       setUsers(users);
-//     });
-// }, []);
-
-  // const sendMessage = (event) => {
-  //   event.preventDefault();
-
-  //   if(message) {
-  //     socket.emit('sendMessage', message, () => setMessage(''));
-  //   }
-  // }
-
+  // }, )
   return (
     <div className="outerContainer">
       <div className="container">

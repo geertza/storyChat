@@ -5,7 +5,7 @@ import "./App.css";
 import login from './components/login'
 // import lobby from './components/Navbar'
 import chat from './components/chat/Chat/Chat'
-
+// import test from './components/test'
 
 
 
@@ -21,7 +21,7 @@ function App() {
 
         <Switch>
           <Route exact path="/" component={login} />
-          {/* <Route exact path="/lobby" component={lobby} /> */}
+          {/* <Route exact path="/lobby" component={test} /> */}
           <Route exact path="/user/logout" component={login} />
           <Route path="/chat" component={chat} />
         </Switch>

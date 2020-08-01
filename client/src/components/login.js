@@ -60,7 +60,7 @@ const Login = props=>{
   const onSubmit = e =>{
       e.preventDefault();
       AuthService.login(player).then(data=>{
-          const { isAuthenticated,player} = data;
+          const { isAuthenticated} = data;
           if(isAuthenticated){
               props.history.push('/chat');
           }

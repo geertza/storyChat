@@ -2,7 +2,7 @@
 export default {
     login : user =>{
         console.log(user);
-        return fetch('/user/login',{
+        return fetch('/user/login?Content-Type=application/json',{
             method : "post",
             body : JSON.stringify(user),
             headers : {
