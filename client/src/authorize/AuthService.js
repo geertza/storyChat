@@ -2,12 +2,13 @@
 export default {
     login : user =>{
         console.log(user);
-        return fetch('/user/login?Content-Type=application/json',{
+        return fetch("/user/login",{
             method : "post",
-            body : JSON.stringify(user),
+            body: JSON.stringify(user),
             headers : {
-                'Content-Type' : 'application/json'
-            }
+                'Content-Type' : "application/json;charset=UTF-8",
+                "Accept" : "application/json, text/plain, */*"
+             }
         }).then(res => {
             if(res.status !== 401)
                 return res.json().then(data => data);

@@ -1,84 +1,48 @@
-const express = require('express');
-const path = require('path');
-const { Socket } = require('dgram');
+const mongoose = require("mongoose");
+const express = require("express");
+const cors = require("cors");
+const passport = require("passport");
+const passportLocal = require("passport-local").Strategy;
+const cookieParser = require("cookie-parser");
+const bcrypt = require("bcryptjs");
+const session = require("express-session");
+const bodyParser = require("body-parser");
 const app = express();
-const PORT = process.env.PORT || 3001;
-require ('dotenv').config();
-const mongoose = require('mongoose');
-const userRouter = require('./routes/user');
-const cookieParser = require('cookie-parser');
-const cors = require('cors');
-// body parser to express
-app.use(express.json());
-// encryption key
-app.use(cookieParser());
-
+const User = require("./models/user");
+const userRouter = require('./routes/FetchRoutes');
+var http = require('http').Server(app);
+//----------------------------------------- END OF IMPORTS---------------------------------------------------
+//----mongo-------------
 // connect to mongodb through moongoose orm
-mongoose.connect('mongodb://localhost/dat2', {
+mongoose.connect('mongodb://localhost/datdevel', {
   useNewUrlParser: true,
   useUnifiedTopology: true
   },()=>{console.log('db connect');
 });
-app.use('/user',userRouter);
-
-
-//-------io socket----
-app.use(cors());
-const server = require('http').createServer(app);
-const io = require('socket.io')(server);
-// const { disconnect } = require('process');
-
-io.on('connect', (socket) => {
-  socket.on('join', ({ name }, callback) => {
-    const { error, user } = addUser({ id: socket.id, name, room });
-
-    if(error) return callback(error);
-
-    socket.join(user.room);
-
-    socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.`});
-    socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined!` });
-
-    io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room) });
-
-    callback();
-  });
-
-
-  socket.on('sendMessage', (message, callback) => {
-    const user = getUser(socket.id);
-
-    io.to(user.room).emit('message', { user: user.name, text: message });
-
-    callback();
-  });
-
-  socket.on('disconnect', () => {
-    const user = removeUser(socket.id);
-
-    if(user) {
-      io.to(user.room).emit('message', { user: 'Admin', text: `${user.name} has left.` });
-      io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room)});
-    }
-  })
-});
-
-
-
-
 app.use(require('morgan')('dev'));
 
-//access socket.io
-app.use(express.static(__dirname + '/node_modules'));
-
-app.use(express.static(__dirname + '/public'));
-app.get('/',function(req,res,next){
-  res.sendFile(__dirname + '/index.html');
-})
-// // serve static assets
-// if (process.env.NODE_ENV === 'production') {
-//   app.use(express.static('./build'));
-//   // server index.html if `/about` reached -> assets served through `express.static`
-//   app.get('*', (req, res) => res.sendFile(path.join(__dirname, './build/index.html')));
-// }
-app.listen(PORT, () => console.log('App running on PORT: ' + PORT));
+// Middleware
+app.use(bodyParser.json());
+app.use(bodyParser.urlencoded({ extended: true }));
+app.use(
+  cors({
+    origin: "http://localhost:3000", // <-- location of the react app were connecting to
+    credentials: true,
+  })
+);
+app.use(
+  session({
+    secret: "game",
+    resave: true,
+    saveUninitialized: true,
+  })
+);
+app.use(cookieParser("secretcode"));
+app.use(passport.initialize());
+app.use(passport.session());
+require("./Config/passport")(passport);
+app.use('/user',userRouter);
+//Start Server
+http.listen(3001, () => {
+  console.log("Server Has Started 3001");
+});
