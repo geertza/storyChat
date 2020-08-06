@@ -12,12 +12,13 @@ app.post("/login", (req, res, next) => {
         res.status(401);
       res.send("No User Exists");
       }
-      else {
+      else { 
         req.logIn(user,res, (err) => {
+           console.dir('here',user,res);
           if (err) throw err;
-          res.status(201);
+          res.status(200);
           res.send("Successfully Authenticated");
-          console.log(req.user);
+         
         });
       }
     })(req, res, next);

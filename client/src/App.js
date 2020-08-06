@@ -4,7 +4,7 @@ import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 import "./App.css";
 import login from './components/login'
 // import lobby from './components/Navbar'
-import chat from './components/chat/Chat/Chat'
+import chat from './components/chat'
 // import test from './components/test'
 
 
