@@ -25,7 +25,8 @@ const Chat = ({ location }) => {
 
     socket = io(ENDPOINT);
  socket.on('message', message => {
-      setMessages(messages => [ ...messages, message ]);
+   console.log('talk=',message)
+      // setMessages(messages => [ ...messages, message ]);
     });
     
     socket.on("roomData", ({ users }) => {

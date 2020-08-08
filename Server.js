@@ -68,10 +68,7 @@ var sessionMiddleware = session({
 
 app.use(sessionMiddleware);
 
-// io.use(function(socket, next){
-//   socket.client.request.originalUrl = socket.client.request.url;
-//   cookieParser(socket.client.request, socket.client.request.res, next);
-// });
+
 
 
 
@@ -88,33 +85,22 @@ io.on('connection', function(socket){
       console.log('Client has joined');
   });
 
-  socket.on('sendMessage', (message, callback) => {
+  socket.on('sendMessage', (message) => {
    console.log(message)
-
-    callback();
+   socket.emit('message',message);
+   socket.broadcast.emit('message',message);
   });
+ 
 
   socket.on('disconnect', () => {
     console.log('logut')
+  // socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.`});
+  // socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined!` });
 
     
   })
 });
 app.use(express.static(__dirname + '/node_modules'));
-app.get('/test',(req,res,next) =>{
-  res.sendFile(__dirname + '/test.html') 
-})
-app.get('/chat',
-  passport.authenticate('local', {
-    
-    successRedirect: '/chat',
-    failureRedirect: '/',
-  })
-);
-
-
-
-
 
 //Start Server
 http.listen(3001, () => {
