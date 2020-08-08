@@ -14,7 +14,6 @@ import { makeStyles } from '@material-ui/core/styles';
 import AuthService from '../authorize/AuthService';
 import Paper from '@material-ui/core/Paper';
 
-
 function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
@@ -34,14 +33,14 @@ const Login = props=>{
       root: {
         height: '100vh',
       },
-      image: {
-        backgroundImage: 'url(https://source.unsplash.com/random)',
-        backgroundRepeat: 'no-repeat',
-        backgroundColor:
-          theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-      },
+      // image: {
+      //   backgroundImage: 'url()',
+      //   backgroundRepeat: 'no-repeat',
+      //   backgroundColor:
+      //     theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
+      //   backgroundSize: 'cover',
+      //   backgroundPosition: 'center',
+      // },
       paper: {
         margin: theme.spacing(8, 4),
         display: 'flex',
@@ -66,6 +65,8 @@ const Login = props=>{
         const [player,setPlayer] = useState({username: "", password : ""});
         const [message,setMessage] = useState(null);
         const quickuser = {username: "andy", password : "pass"}
+        const username = {player}.username
+        let room = 'lobby'
         const onChange = e =>{
           setPlayer({...player,[e.target.name] : e.target.value});
         }
@@ -77,7 +78,14 @@ const Login = props=>{
             console.log('login = ',data)  
             const { isAuthenticated} = data;  
             if(isAuthenticated){
-                  props.history.push('/chat');
+              
+              // socket.emit('join', { username, room }, (error) => {
+              //   if(error) {
+              //     alert(error);
+              //   }
+              // })   
+              
+              props.history.push('/chat');
           }
           else{
              setMessage(message);

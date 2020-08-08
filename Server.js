@@ -7,8 +7,6 @@ const passportLocal = require("passport-local").Strategy;
 const cookieParser = require("cookie-parser");
 const bcrypt = require("bcryptjs");
 const session = require("express-session");
-// const redis = require('redis')
-// let RedisStore = require('connect-redis')(session)
 const bodyParser = require("body-parser");
 const app = express();
 const User = require("./models/user");
@@ -48,9 +46,11 @@ app.use('/user',userRouter);
 app.get("/chat", function(req, res){
   req.session // Session object in a normal request
 });
+
+
 //iiiii ooooooooooooooo-----------------------
 //io auth
-var io = require('socket.io');
+var io = require('socket.io') (http)
 var sessionMiddleware = session({
   secret: 'secretcode',
   key: 'express.sid',
@@ -67,29 +67,50 @@ var sessionMiddleware = session({
 });
 
 app.use(sessionMiddleware);
-io = io(http);
-io.use(function(socket, next){
-  socket.client.request.originalUrl = socket.client.request.url;
-  cookieParser(socket.client.request, socket.client.request.res, next);
-});
 
-io.use(function(socket, next){
-  socket.client.request.originalUrl = socket.client.request.url;
-  sessionMiddleware(socket.client.request,   socket.client.request.res, next);
-});
+// io.use(function(socket, next){
+//   socket.client.request.originalUrl = socket.client.request.url;
+//   cookieParser(socket.client.request, socket.client.request.res, next);
+// });
+
+
 
 io.use(function(socket, next){
   passportInit(socket.client.request, socket.client.request.res, next);
 });
 
-io.use(function(socket, next){
-  passportSession(socket.client.request, socket.client.request.res, next);
-});
+
 
 io.on('connection', function(socket){
-  
-});
+  console.log('connection',socket.id)
+  socket.emit('welcome')
+  socket.on('join', () => {
+      console.log('Client has joined');
+  });
 
+  socket.on('sendMessage', (message, callback) => {
+   console.log(message)
+
+    callback();
+  });
+
+  socket.on('disconnect', () => {
+    console.log('logut')
+
+    
+  })
+});
+app.use(express.static(__dirname + '/node_modules'));
+app.get('/test',(req,res,next) =>{
+  res.sendFile(__dirname + '/test.html') 
+})
+app.get('/chat',
+  passport.authenticate('local', {
+    
+    successRedirect: '/chat',
+    failureRedirect: '/',
+  })
+);
 
 
 
