@@ -18,9 +18,8 @@ function Copyright() {
   return (
     <Typography variant="body2" color="textSecondary" align="center">
       {'Copyright © '}
-      <Link color="inherit" href="https://material-ui.com/">
-        Your Website
-      </Link>{' '}
+      
+        Dat Game
       {new Date().getFullYear()}
       {'.'}
     </Typography>
@@ -29,6 +28,7 @@ function Copyright() {
 
 
 const Login = props=>{
+    
       const useStyles = makeStyles((theme) => ({
       root: {
         height: '100vh',
@@ -65,7 +65,7 @@ const Login = props=>{
         const [player,setPlayer] = useState({username: "", password : ""});
         const [message,setMessage] = useState(null);
         const quickuser = {username: "andy", password : "pass"}
-        const username = {player}.username
+        
         let room = 'lobby'
         const onChange = e =>{
           setPlayer({...player,[e.target.name] : e.target.value});
@@ -78,14 +78,8 @@ const Login = props=>{
             console.log('login = ',data)  
             const { isAuthenticated} = data;  
             if(isAuthenticated){
-              
-              // socket.emit('join', { username, room }, (error) => {
-              //   if(error) {
-              //     alert(error);
-              //   }
-              // })   
-              
-              props.history.push('/chat');
+
+              props.history.push(`/chat?room=${room}`);
           }
           else{
              setMessage(message);
@@ -93,8 +87,15 @@ const Login = props=>{
           });
         }
       
+      
+      
+         const username = {player}.username;
+     
+          
     return (
+      
       <Grid container component="main" className={classes.root}>
+       
         <CssBaseline />
         <Grid item xs={false} sm={4} md={7} className={classes.image} />
         <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square>
@@ -165,5 +166,5 @@ const Login = props=>{
         </Grid>
       </Grid>
     );
-  }
+  }  
 export default Login;

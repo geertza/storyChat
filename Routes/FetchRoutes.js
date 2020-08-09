@@ -39,8 +39,19 @@ app.post("/login", (req, res, next) => {
       }
     });
   });
-  app.get("/user", (req, res) => {
-    res.send(req.user); // The req.user stores the entire user that has been authenticated inside of it.
-  });
-
+  app.route('/status').get((req, res) => {
+    console.log(req.isAuthenticated())
+    if (req.isAuthenticated()) {
+      res.status(200).json({ user: req.user })
+    } else {
+      res.status(200).json({
+        user: {
+          access_id: 0,
+          type: 'Guest',
+          user_id: 0,
+          username: 'guest'
+        }
+      })
+    }
+  })
   module.exports = app;

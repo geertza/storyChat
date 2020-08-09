@@ -1,3 +1,4 @@
+  
 import React, { useState, useEffect } from "react";
 
 import io from "socket.io-client";
@@ -25,8 +26,8 @@ const Chat = ({ location }) => {
 
     socket = io(ENDPOINT);
  socket.on('message', message => {
-   console.log('talk=',message)
-      // setMessages(messages => [ ...messages, message ]);
+  //  console.log('talk=',message)
+      setMessages(messages => [ ...messages, message ]);
     });
     
     socket.on("roomData", ({ users }) => {
@@ -45,6 +46,7 @@ const Chat = ({ location }) => {
       console.log(message)
     if(message) {
       socket.emit('sendMessage', message, () => setMessage(''));
+      setMessage('')
     }
   }
 
