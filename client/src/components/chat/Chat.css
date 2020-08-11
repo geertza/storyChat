@@ -1,9 +1,12 @@
-.outerContainer {
+.chatContainer {
   display: flex;
   justify-content: center;
   align-items: center;
   height: 100vh;
   background-color: #1A1A1D;
+  position: sticky;
+  right: 0%;
+  bottom: 20%;
 }
 
 .container {

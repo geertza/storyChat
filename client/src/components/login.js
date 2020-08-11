@@ -33,14 +33,14 @@ const Login = props=>{
       root: {
         height: '100vh',
       },
-      // image: {
-      //   backgroundImage: 'url()',
-      //   backgroundRepeat: 'no-repeat',
-      //   backgroundColor:
-      //     theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
-      //   backgroundSize: 'cover',
-      //   backgroundPosition: 'center',
-      // },
+      image: {
+        backgroundImage: 'url(https://3.bp.blogspot.com/-wZ9qLGU7h60/V7N_JKmaxeI/AAAAAAAABeg/FDpNlFFfmkY-1xIacO5jbacnbuhHW0vFQCEw/s1600/04_manatarms.png)',
+        backgroundRepeat: 'no-repeat',
+        backgroundColor:
+          theme.palette.type === 'light' ? theme.palette.grey[50] : theme.palette.grey[900],
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+      },
       paper: {
         margin: theme.spacing(8, 4),
         display: 'flex',
@@ -65,7 +65,7 @@ const Login = props=>{
         const [player,setPlayer] = useState({username: "", password : ""});
         const [message,setMessage] = useState(null);
         const quickuser = {username: "andy", password : "pass"}
-        
+        let name = quickuser.username
         let room = 'lobby'
         const onChange = e =>{
           setPlayer({...player,[e.target.name] : e.target.value});
@@ -79,7 +79,7 @@ const Login = props=>{
             const { isAuthenticated} = data;  
             if(isAuthenticated){
 
-              props.history.push(`/chat?room=${room}`);
+              props.history.push(`/chat?room=${room}&name=${name}`);
           }
           else{
              setMessage(message);
@@ -89,7 +89,7 @@ const Login = props=>{
       
       
       
-         const username = {player}.username;
+         
      
           
     return (

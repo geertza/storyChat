@@ -41,7 +41,7 @@ export default {
                 .then(data => data);
     },
     isAuthenticated : ()=>{
-        return fetch('/user/user')
+        return fetch('/user/user', {credentials: 'include'})
                 .then(res=>{
                     if(res.status !== 401)
                         return res.json().then(data => data);
