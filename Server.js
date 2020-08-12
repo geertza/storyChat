@@ -19,7 +19,7 @@ app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(
   cors({
-    origin: "http://localhost:3000", // <-- location of the react app were connecting to
+    origin:"process.env.NODE_ENV || http://localhost:3000", // <-- location of the react app were connecting to
     credentials: true,
   })
 );
@@ -42,7 +42,7 @@ app.use(
 );
 //----mongo-------------
 // connect to mongodb through moongoose orm
-mongoose.connect('mongodb://localhost/datdevelo', {
+mongoose.connect('process.env.NODE_ENV || mongodb://localhost/datdevelo', {
   useNewUrlParser: true,
   useUnifiedTopology: true
   },()=>{console.log('db connect');
@@ -123,6 +123,6 @@ io.on('connect', (socket) => {
 });
 app.use(express.static(__dirname + '/node_modules'));
 //Start Server
-http.listen(3001, () => {
+http.listen(process.env.NODE_ENV || 3001, () => {
   console.log("Server Has Started 3001");
 });
