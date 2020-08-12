@@ -1,0 +1,65 @@
+import React, { useState } from "react";
+import Api from "../authorize/api"
+import "./apiSearch.css"
+
+
+const ApiSearch = () => {
+    const [search,setSearch] = useState('');
+    const [imageGallery,setImageGallery] = useState([]);
+	const [imageUrl,setImageUrl] = useState([]);
+	const onSubmitform = e =>{
+		e.preventDefault();
+		let image=search
+		Api(image)
+		// .then(result => result.json())
+		.then(data=>{
+		//  codatata) 
+		 let results = data.data.value[1].contentUrl
+		 setImageGallery(data.data.value)
+		}).catch(err => console.error(err))
+	}
+		
+            
+	// const imgClick = d => {
+	// 	setImageUrl(d.src)
+	// 	console.log(imageUrl)
+	//   } 
+
+	const onChange = e =>{
+		setSearch( e.target);
+		console.log({search})
+	  }
+
+	return (
+		<div className="ApiBody">
+			<div className="searchBar">
+				<form onSubmit={onSubmitform}>
+					<label>Search</label>
+					<input
+						type="text"
+						id="search"
+						name="search"
+						label="search"
+						autoComplete='search'
+						onChange={onChange}
+						
+						
+					/>
+					<button type="submit">submit</button>
+				</form>
+			</div>
+			<div className="grid">
+				{imageGallery.map(function (image, i) {
+					// return (
+					// 	<div key={i} className="empBlock">
+					// 		<img src={image} alt=""></img>
+					// 	</div> */}
+					// {/* );
+					return <div><img id='character' key= {i} src={image.contentUrl}  alt=""></img> </div>
+				})}
+			</div>
+		</div>
+	);
+            }
+
+export default ApiSearch;

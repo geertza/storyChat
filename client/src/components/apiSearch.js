@@ -1,16 +1,18 @@
-import React, { useState,useEffect } from "react";
+import React, { useState,useCallback } from "react";
 import Api from "../authorize/api"
-import "./apiSearch.css"
+// import "./apiSearch.css"
 
 
-const ApiSearch = () => {
-    const [search,setSearch] = useState('');
-    const [imageGallery,setImageGallery] = useState([]);
-
+function ApiSearch (props ) {
+	console.log("Props in Input :", props);
+    let [search,setSearch] = useState('');
+    let [imageGallery,setImageGallery] = useState([]);
+	let [imageUrl,setImageUrl] = useState('');
+	
 	const onSubmitform = e =>{
 		e.preventDefault();
 		let image=search
-		Api('ninja')
+		Api(image)
 		// .then(result => result.json())
 		.then(data=>{
 		//  codatata) 
@@ -20,23 +22,24 @@ const ApiSearch = () => {
 		}).catch(err => console.error(err))
 	}
 		
-            
-	// 	console.log('login = ',data)  
-		 
 	
-	
-	//     useEffect( () => {
-	// //mount axios request for api dataa
-
-	//     }, [])
 	// event handlers
 	const onChange = e =>{
 		setSearch( e.target.value);
-		console.log({search})
+		console.log(search)
 	  }
+	  const handleChange = event => {
+    	props.onchange(event.target.src);
+    }
+        
+	
 
+	
+	//  const Character = imageUrl;
+	//  return <img src={Character} />
+	  
 	return (
-		<div className="empBody">
+		<div className="ApiBody">
 			<div className="searchBar">
 				<form onSubmit={onSubmitform}>
 					<label>Search</label>
@@ -53,14 +56,11 @@ const ApiSearch = () => {
 					<button type="submit">submit</button>
 				</form>
 			</div>
+			{/* <button onClick={console.log(this.props.data)} /> */}
+			<img src={imageUrl}></img>
 			<div className="grid">
 				{imageGallery.map(function (image, i) {
-					// return (
-					// 	<div key={i} className="empBlock">
-					// 		<img src={image} alt=""></img>
-					// 	</div> */}
-					// {/* );
-					return <div><img style={{height: '150px'}} src={image.contentUrl} alt=""></img> </div>
+					return <div ><img id='character' key={i} src={image.contentUrl}  alt="" onClick={handleChange}></img> </div>
 				})}
 			</div>
 		</div>
