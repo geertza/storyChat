@@ -2,6 +2,7 @@ const express = require("express");
 const app = express.Router();
 const passport = require("passport");
 const search = require("../api/BingSearch");
+const bcrypt = require("bcrypt")
 // const passportConfig = require('../passport');
 
 const User = require("../models/user");
@@ -38,9 +39,11 @@ app.post("/register", (req, res) => {
 		}
 	});
 });
-app.get("/bing/:id",async (req, res) => {
+app.get("/bing/:id/:option",async (req, res) => {
 	console.log('query = ',req.params.id)
-	let image = req.params.id
-	return res.json((await search(image)).data)
+	let image = req.params.id;
+	let option = req.params.option;
+	// console.log(image,option)
+	return res.json((await search(image,option)).data)
 });
 module.exports = app;

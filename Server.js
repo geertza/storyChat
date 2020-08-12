@@ -98,19 +98,23 @@ io.on('connect', (socket) => {
 
   });
 
+  socket.on('dom', function(data) {
+    socket.emit('broadcast',{data});
+ 
+  })
+  
   socket.on('disconnect', () => {
     const user = removeUser(socket.id);
 
     if(user) {
-      io.to(user.room).emit('message', { user: 'Admin', text: `${user.name} has left.` });
-      io.to(user.room).emit('roomData', { room: user.room, users: getUsersInRoom(user.room)});
+     
     }
   })
 
  
 
   socket.on('disconnect', () => {
-    console.log('logut')
+  
   // socket.emit('message', { user: 'admin', text: `${user.name}, welcome to room ${user.room}.`});
   // socket.broadcast.to(user.room).emit('message', { user: 'admin', text: `${user.name} has joined!` });
 

@@ -5,12 +5,17 @@ import queryString from 'query-string';
 import Modal from '@material-ui/core/Modal';
 import { makeStyles } from '@material-ui/core/styles';
 import Toolbar from '@material-ui/core/Toolbar';
+import EmojiPeopleIcon from '@material-ui/icons/EmojiPeople';
+import PhotoIcon from '@material-ui/icons/Photo';
+import ToggleButton from '@material-ui/lab/ToggleButton';
+import ToggleButtonGroup from '@material-ui/lab/ToggleButtonGroup';
 import io from "socket.io-client";
 // import BottomAppBar from './lobbyBar'
 import Messages from './Chat/Messages/Messages';
 import Api from "../authorize/api"
 import InfoBar from "./Chat/InfoBar/InfoBar"
 import "./lobby.css"
+import Draggable from 'react-draggable';
 let socket;
 const useStyles = makeStyles(theme => ({
   offset: theme.mixins.toolbar,
@@ -34,19 +39,21 @@ const Lobby = ({ location }) => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const ENDPOINT = 'http://localhost:3001';
-  let [imageUrl,setImageUrl] = useState('https://f0.pngfuel.com/png/355/447/music-media-player-computer-icons-mp3-player-button-png-clip-art-thumbnail.png');
+  let [imageUrl,setImageUrl] = useState('hi');
   const [open, setOpen] = React.useState(false);
   let [search,setSearch] = useState('');
   let [imageGallery,setImageGallery] = useState([]);
-  let [room, setRoom]= useState('')
-  let [bg,setBG]=useState('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/75e31e27-863b-4091-9a6f-56d3c368519a/ddqe2ra-adcf2540-9c46-47b8-8b91-751ba2f4b847.jpg/v1/fill/w_424,h_250,q_70,strp/kaminari__by_mangamie_ddqe2ra-250t.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOiIsImlzcyI6InVybjphcHA6Iiwib2JqIjpbW3siaGVpZ2h0IjoiPD02MDQiLCJwYXRoIjoiXC9mXC83NWUzMWUyNy04NjNiLTQwOTEtOWE2Zi01NmQzYzM2ODUxOWFcL2RkcWUycmEtYWRjZjI1NDAtOWM0Ni00N2I4LThiOTEtNzUxYmEyZjRiODQ3LmpwZyIsIndpZHRoIjoiPD0xMDI0In1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmltYWdlLm9wZXJhdGlvbnMiXX0.KaFHpHKLa6aZsDXtIjgaUmSZeGthpq1EVDcA7yAqTOY')
+  let [room, setRoom]= useState('');
+  const [alignment, setAlignment] = React.useState('char');
+  let [bg,setBG]=useState('')
+  let [user,setUser]=useState('')
   socket = io(ENDPOINT);
-  
-  
+  const character = []  
   
   useEffect(() => {
     const { name, room } = queryString.parse(location.search);
-    setRoom(room)  
+    setRoom(room);
+    setUser(name); 
   console.log({name},room)
   socket.emit('join',  {name,room}, (error) => {
     
@@ -57,7 +64,7 @@ const Lobby = ({ location }) => {
 
 }, [location.search]);
 
-//-----------------socket
+//-----------------socket-----------------------------------------------------------------
 socket.on('message', message => {
       setMessages(messages => [ ...messages, message ]);
     });
@@ -72,8 +79,25 @@ socket.on('message', message => {
       socket.emit('sendMessage', message, () => setMessage(''));
       setMessage('')
     }
+    
   }
   
+  
+  var myVar = setInterval(myTimer, 2000);
+  // let data={user,imageUrl}
+  function myTimer() {
+    socket.emit('dom',{user,imageUrl});
+  }
+  socket.on('broadcast', function(data) {
+    
+   let x = data.data.user  
+  let y = data.data.imageUrl 
+   character.push(data.data.user)
+        
+        console.log(character)
+  })
+  
+
 //event handlers------------------
   const handleOpen = () => {
     setOpen(true);
@@ -88,23 +112,29 @@ socket.on('message', message => {
 		console.log(search)
 	  }
 	  const handleChange = event => {
-    	setImageUrl(event.target.src);
+      if (alignment === 'bg'){
+        setBG(event.target.src)
+      }
+      
+      setImageUrl(event.target.src);
     }
     //-------------query api
     const onSubmitform = e =>{
       e.preventDefault();
-      let image=search
-      Api(image)
-      // .then(result => result.json())
+      let option = alignment;
+      let image=search;
+
+      Api(image,option)
       .then(data=>{
-      //  codatata) 
-       let results = data.data.value[1].contentUrl
-       console.log(results)
        setImageGallery(data.data.value)
       }).catch(err => console.error(err))
     }
+
+    const handleAlignment = (event, newAlignment) => {
+      setAlignment(newAlignment);
+    };
     const divStyle = {
-      backgroundColor: 'blue',
+      backgroundColor: 'black',
       height:'100vh',
       backgroundImage: `url(${bg})`,
     };
@@ -114,14 +144,19 @@ socket.on('message', message => {
       <div className='bg' style={divStyle} >
        
        <InfoBar room={room} ></InfoBar>       
-       <img src={imageUrl} alt=''></img>
+       <div className='char'>
+       <Draggable>
+       <img className="Avatar" id={user} src={imageUrl} alt=''></img>
+       </Draggable>
+       </div>
        <Messages messages={messages} message={message} setMessage={setMessage} sendMessage={sendMessage}        />
+       
        <div className="main" >
         <Toolbar>{
           <div>
           <div>
       <button type="button" onClick={handleOpen}>
-        Find Avatar
+        Images
       </button>
       <Modal
      
@@ -134,7 +169,6 @@ socket.on('message', message => {
         <div className="ApiBody">
 			<div className="searchBar">
 				<form onSubmit={onSubmitform}>
-					<label>Search</label>
 					<input
 						type="text"
 						id="search"
@@ -145,6 +179,19 @@ socket.on('message', message => {
 						
 						
 					/>
+          <ToggleButtonGroup
+      value={alignment}
+      exclusive
+      onChange={handleAlignment}
+      aria-label="text alignment"
+    >
+           <ToggleButton value="char" color="primary"  aria-label="bold">
+        <EmojiPeopleIcon />
+      </ToggleButton>
+      <ToggleButton value="bg"  color="primary" fontSize="large" aria-label="bold">
+        <PhotoIcon />
+      </ToggleButton>
+           </ToggleButtonGroup>
 					<button type="submit">submit</button>
 				</form>
 			</div>
@@ -160,14 +207,28 @@ socket.on('message', message => {
         </div>
           </Modal>
     </div>
-  
+    <form className="form">
+    <input
+      className="input"
+      type="text"
+      placeholder="Type a message..."
+      value={message}
+      onChange={({ target: { value } }) => setMessage(value)}
+      onKeyPress={event => event.key === 'Enter' ? sendMessage(event) : null}
+    />
+    <button className="sendButton" onClick={e => sendMessage(e)}>Send</button>
+  </form>
 
        </div>
-        }</Toolbar>
+        }
+        </Toolbar>
+        
+       
       </div>
-      <div className={classes.offset} />
+      
+      <div className={classes.offset} /> 
       </div>
        ) ;
-      
+       
   }
   export default Lobby

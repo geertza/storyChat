@@ -2,9 +2,12 @@
   padding: 5% 0;
   overflow: auto;
   flex: auto;
-  background-color: blueviolet;
-  max-width: 30vw;
+  background-color: rgb(47, 16, 223);
+  /* max-width: 30vw; */
   float: right;
+  position: absolute;
+  top: 50%;
+  right: 5%;
   max-height: 70zvh;
 }
 .form {
@@ -34,8 +37,4 @@ input:focus, textarea:focus, select:focus{
   display: inline-block;
   border: none;
   width: 10vw;
-}
-.main{
-  position: relative;
-  top:20%;
 }

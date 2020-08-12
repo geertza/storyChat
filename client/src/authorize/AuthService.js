@@ -32,8 +32,7 @@ export default {
             headers : {
                 'Content-Type' : 'application/json'
             }
-        }).then(res => res.json())
-          .then(data => data);
+        })
     },
     logout : ()=>{
         return fetch('/user/logout')

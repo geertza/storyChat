@@ -64,8 +64,8 @@ const Login = props=>{
 
         const [player,setPlayer] = useState({username: "", password : ""});
         const [message,setMessage] = useState(null);
-        const quickuser = {username: "andy", password : "pass"}
-        let name = quickuser.username
+        // const quickuser = {username: "andy", password : "pass"}
+        let name = player.username
         let room = 'lobby'
         const onChange = e =>{
           setPlayer({...player,[e.target.name] : e.target.value});
@@ -73,7 +73,7 @@ const Login = props=>{
         
         const onSubmitform = e =>{
           e.preventDefault();
-          AuthService.login(quickuser).then(data=>{
+          AuthService.login(player).then(data=>{
             
             console.log('login = ',data)  
             const { isAuthenticated} = data;  
@@ -147,13 +147,9 @@ const Login = props=>{
                 Sign In
               </Button>
               <Grid container>
-                <Grid item xs>
-                  <Link href="#" variant="body2">
-                    Forgot password?
-                  </Link>
-                </Grid>
+                
                 <Grid item>
-                  <Link href="#" variant="body2">
+                  <Link href="/reg" variant="body2">
                     {"Don't have an account? Sign Up"}
                   </Link>
                 </Grid>
