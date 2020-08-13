@@ -42,7 +42,7 @@ app.use(
 );
 //----mongo-------------
 // connect to mongodb through moongoose orm
-mongoose.connect('process.env.NODE_ENV || mongodb://localhost/datdevelo', {
+mongoose.connect('process.env.DATABASE_URL || mongodb://localhost/datdevelo', {
   useNewUrlParser: true,
   useUnifiedTopology: true
   },()=>{console.log('db connect');
