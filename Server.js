@@ -28,7 +28,7 @@ app.use(cookieParser("secretcode"));
 
 app.use(passport.initialize());
 app.use(passport.session());
-require("./Config/passport")(passport);
+require("./config/passport")(passport);
 app.use('/user',userRouter);
 app.get("/chat", function(req, res){
   req.session // Session object in a normal request
