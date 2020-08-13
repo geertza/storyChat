@@ -10,7 +10,7 @@ const session = require("express-session");
 const bodyParser = require("body-parser");
 const app = express();
 const User = require("./models/user");
-const userRouter = require('./routes/FetchRoutes');
+const userRouter = require('./Routes/FetchRoutes');
 var http = require('http').Server(app);
 
 
