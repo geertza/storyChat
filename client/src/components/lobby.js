@@ -39,7 +39,7 @@ const Lobby = ({ location }) => {
   const [message, setMessage] = useState('');
   const [messages, setMessages] = useState([]);
   const ENDPOINT = 'http://localhost:3001';
-  let [imageUrl,setImageUrl] = useState('hi');
+  let [imageUrl,setImageUrl] = useState('');
   const [open, setOpen] = React.useState(false);
   let [search,setSearch] = useState('');
   let [imageGallery,setImageGallery] = useState([]);
@@ -48,6 +48,7 @@ const Lobby = ({ location }) => {
   let [bg,setBG]=useState('')
   let [user,setUser]=useState('')
   socket = io(ENDPOINT);
+  const [playRender, setPlayRender] = React.useState([]);
   const character = []  
   
   useEffect(() => {
@@ -86,15 +87,21 @@ socket.on('message', message => {
   var myVar = setInterval(myTimer, 2000);
   // let data={user,imageUrl}
   function myTimer() {
-    socket.emit('dom',{user,imageUrl});
+    socket.emit('dom',{user});
   }
   socket.on('broadcast', function(data) {
-    
-   let x = data.data.user  
-  let y = data.data.imageUrl 
-   character.push(data.data.user)
+  let x = data.data.user
+  if  (x === '' || x === user){
+    return
+  }else {  
+  if (character.indexOf(x) === -1)
+    {character.push(data.data.user)}
+    else
+    {   setPlayRender(character)
+      console.log(character)}
+  }
         
-        console.log(character)
+        
   })
   
 
@@ -149,6 +156,15 @@ socket.on('message', message => {
        <img className="Avatar" id={user} src={imageUrl} alt=''></img>
        </Draggable>
        </div>
+       
+       {playRender.map(function ( i) {
+					return <Draggable>
+          <img className="Avatar" id={i.value}  key={i*i} src={'https://fanart.tv/fanart/movies/9806/hdmovieclearart/the-incredibles-55101ab1827a4.png'} alt=''></img>
+          </Draggable>
+				})}
+       
+       
+       
        <Messages messages={messages} message={message} setMessage={setMessage} sendMessage={sendMessage}        />
        
        <div className="main" >

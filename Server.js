@@ -79,7 +79,7 @@ io.on('connect', (socket) => {
   socket.on('join', ({ name, room }, callback) => {
     const { error, user } = addUser({  name, room });
 
-    if(error) return (error);
+    if(error);
 
     socket.join(user.room);
 
@@ -125,4 +125,4 @@ app.use(express.static(__dirname + '/node_modules'));
 //Start Server
 http.listen(process.env.NODE_ENV || 3001, () => {
   console.log("Server Has Started 3001");
-});
+}); 
