@@ -41,6 +41,7 @@ app.post("/register", (req, res) => {
 });
 app.get("/bing/:id/:option",async (req, res) => {
 	console.log('query = ',req.params.id)
+	console.log('char',req.params.option)
 	let image = req.params.id;
 	let option = req.params.option;
 	// console.log(image,option)

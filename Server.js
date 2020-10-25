@@ -121,6 +121,13 @@ io.on('connect', (socket) => {
     
   })
 });
+
+if (process.env.NODE_ENV === 'production') {
+  app.use(express.static('./client/build'));
+  // server index.html if `/about` reached -> assets served through `express.static`
+  app.get('*', (req, res) => res.sendFile(path.join(__dirname, './client/build/index.html')));
+}
+
 app.use(express.static(__dirname + '/node_modules'));
 //Start Server
 http.listen(process.env.PORT|| 3001, () => {
